@@ -6,6 +6,8 @@ class Bike(db.Model):
     price = db.Column(db.Integer)
     size = db.Column(db.Integer)
     type = db.Column(db.String)
+    cyclist_id = db.Column(db.Integer, db.ForeignKey('cyclist.id'))
+    cyclist = db.relationship("Cyclist", back_populates="bikes")
 
     def to_dict(self):
         bike_dict = {

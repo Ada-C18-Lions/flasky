@@ -27,4 +27,7 @@ def create_app(testing=None):
     from .routes.bike import bike_bp
     app.register_blueprint(bike_bp)
 
+    from .routes.cyclist import cyclist_bp
+    app.register_blueprint(cyclist_bp)
+
     return app
