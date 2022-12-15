@@ -21,9 +21,9 @@ def get_all_bikes():
     name_param = request.args.get("name")
 
     if name_param is None:
-        bikes = Bike.query.all()
+        bikes = Bike.query.order_by(Bike.id).all()
     else:
-        bikes = Bike.query.filter_by(name=name_param)
+        bikes = Bike.query.filter_by(name=name_param).order_by(Bike.id)
 
     response = [bike.to_dict() for bike in bikes]
 
@@ -71,3 +71,20 @@ def delete_one_bike(bike_id):
     db.session.commit()
 
     return jsonify({"message": f"Successfully deleted bike with id `{bike_id}`"}), 200
+
+
+@bike_bp.route("/<bike_id>/<new_price>", methods=["PATCH"])
+def update_one_bike_price(bike_id, new_price):
+    chosen_bike = get_one_obj_or_abort(Bike, bike_id)
+
+    try:
+        new_price = int(new_price) #new price must be an integer as we have defined in the model.
+    except:
+        response_str = f"Invalid new price: `{new_price}`. New price must be an integer"
+        return jsonify({"message":response_str}), 400
+
+    chosen_bike.price = new_price
+
+    db.session.commit()
+
+    return jsonify({"message": f"Successfully updated Bike ID `{bike_id}`'s price to be {new_price}"}), 200
